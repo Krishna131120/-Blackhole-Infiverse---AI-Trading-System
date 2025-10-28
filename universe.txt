@@ -1,0 +1,202 @@
+# Trading Universe for Krishna Prediction Agent
+# All symbols are yfinance compatible
+
+# ===========================================
+# INDIAN STOCK MARKET (NSE) - MAJOR SECTORS
+# ===========================================
+
+# Banking & Financial Services
+HDFCBANK.NS
+ICICIBANK.NS
+KOTAKBANK.NS
+SBIN.NS
+AXISBANK.NS
+INDUSINDBK.NS
+BANDHANBNK.NS
+FEDERALBNK.NS
+IDFCFIRSTB.NS
+RBLBANK.NS
+
+# Information Technology
+TCS.NS
+INFY.NS
+HCLTECH.NS
+WIPRO.NS
+TECHM.NS
+MPHASIS.NS
+PERSISTENT.NS
+COFORGE.NS
+LTI.NS
+MINDTREE.NS
+
+# Oil & Gas / Energy
+RELIANCE.NS
+ONGC.NS
+IOC.NS
+BPCL.NS
+GAIL.NS
+PETRONET.NS
+OIL.NS
+ADANIGREEN.NS
+TATAPOWER.NS
+ADANIPORTS.NS
+
+# Automobile
+MARUTI.NS
+TATAMOTORS.NS
+BAJAJ-AUTO.NS
+M&M.NS
+HEROMOTOCO.NS
+EICHERMOT.NS
+ASHOKLEY.NS
+BAJAJFINSV.NS
+BAJAJHLDNG.NS
+TVSMOTORS.NS
+
+# Pharmaceuticals & Healthcare
+SUNPHARMA.NS
+DRREDDY.NS
+CIPLA.NS
+DIVISLAB.NS
+BIOCON.NS
+LUPIN.NS
+AUROPHARMA.NS
+GLENMARK.NS
+TORNTPHARM.NS
+CADILAHC.NS
+
+# FMCG (Fast Moving Consumer Goods)
+HINDUNILVR.NS
+ITC.NS
+NESTLEIND.NS
+BRITANNIA.NS
+DABUR.NS
+GODREJCP.NS
+MARICO.NS
+COLPAL.NS
+UBL.NS
+TATACONSUM.NS
+
+# Telecom & Media
+BHARTIARTL.NS
+SUNTV.NS
+NETWORK18.NS
+TVTODAY.NS
+BALAJITELE.NS
+ZEE.NS
+VODAFONEIDEA.NS
+
+# Infrastructure & Construction
+LT.NS
+ADANIENT.NS
+IRCTC.NS
+CONCOR.NS
+GVKPIL.NS
+GMRINFRA.NS
+ADANITRANS.NS
+
+# Metals & Mining
+TATASTEEL.NS
+JSWSTEEL.NS
+SAIL.NS
+HINDALCO.NS
+VEDL.NS
+NMDC.NS
+COALINDIA.NS
+JINDALSTEL.NS
+WELCORP.NS
+RATNAMANI.NS
+
+# Real Estate
+DLF.NS
+GODREJPROP.NS
+SUNTECK.NS
+BRIGADE.NS
+MAHLIFE.NS
+SOBHA.NS
+LODHA.NS
+PURAVANKARA.NS
+
+# Cement
+ULTRACEMCO.NS
+SHREECEM.NS
+GRASIM.NS
+RAMCOCEM.NS
+HEIDELBERG.NS
+ORIENTCEM.NS
+PRISM.NS
+JKLAKSHMI.NS
+
+# ===========================================
+# US STOCKS (GLOBAL EXPOSURE)
+# ===========================================
+AAPL
+MSFT
+GOOGL
+AMZN
+TSLA
+NVDA
+META
+NFLX
+AMD
+INTC
+JPM
+JNJ
+V
+PG
+UNH
+HD
+MA
+DIS
+PYPL
+CRM
+
+# ===========================================
+# CRYPTOCURRENCIES
+# ===========================================
+BTC-USD
+ETH-USD
+BNB-USD
+ADA-USD
+SOL-USD
+MATIC-USD
+DOT-USD
+AVAX-USD
+LINK-USD
+UNI-USD
+
+# ===========================================
+# COMMODITIES
+# ===========================================
+GC=F
+SI=F
+CL=F
+NG=F
+HG=F
+PL=F
+PA=F
+ZC=F
+ZS=F
+ZW=F
+
+# ===========================================
+# INDIAN ETFs & INDICES
+# ===========================================
+NIFTYBEES.NS
+BANKBEES.NS
+ITBEES.NS
+PSUBNKBEES.NS
+
+# ===========================================
+# GLOBAL ETFs
+# ===========================================
+SPY
+QQQ
+VTI
+ARKK
+VEA
+VWO
+EFA
+EEM
+IWM
+GLD

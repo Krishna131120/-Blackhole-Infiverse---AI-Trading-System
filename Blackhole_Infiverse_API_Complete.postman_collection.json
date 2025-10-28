@@ -1,0 +1,1546 @@
+{
+	"info": {
+		"_postman_id": "blackhole-infiverse-api-complete-v4",
+		"name": "Blackhole Infiverse API - Complete Trading System v4.0",
+		"description": "Comprehensive API collection for the Blackhole Infiverse trading system with ML predictions, RL agents, portfolio management, resilience monitoring, and analytics",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "blackhole-infiverse"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Get JWT Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"token"
+							]
+						},
+						"description": "Get JWT authentication token for API access. For demo purposes, accepts any username/password."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/token",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"token"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"token_type\": \"bearer\",\n  \"expires_in\": 1800\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🏥 System Health & Monitoring",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tools/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tools",
+								"health"
+							]
+						},
+						"description": "Check system health, resource usage, and model status"
+					},
+					"response": [
+						{
+							"name": "Healthy System",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/tools/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tools",
+										"health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": \"healthy\",\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n  \"uptime_seconds\": 3600.5,\n  \"system\": {\n    \"cpu_percent\": 15.2,\n    \"memory_percent\": 45.8,\n    \"memory_available_mb\": 8192.0,\n    \"gpu\": {\n      \"available\": true,\n      \"device_name\": \"NVIDIA GeForce RTX 4090\",\n      \"memory_allocated_mb\": 1024.0,\n      \"memory_reserved_mb\": 2048.0\n    },\n    \"request_count\": 1250\n  },\n  \"models_loaded\": true,\n  \"feature_store_info\": {\n    \"symbols\": 143,\n    \"features\": 50,\n    \"loaded\": true\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "API Root",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Get API root information"
+					},
+					"response": [
+						{
+							"name": "API Root",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"name\": \"Prediction Agent API\",\n  \"version\": \"1.0.0\",\n  \"status\": \"running\",\n  \"docs\": \"/docs\",\n  \"health\": \"/tools/health\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Rate Limit Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tools/rate-limit-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tools",
+								"rate-limit-status"
+							]
+						},
+						"description": "Get current rate limiting status for the client"
+					},
+					"response": [
+						{
+							"name": "Rate Limit Status",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tools/rate-limit-status",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tools",
+										"rate-limit-status"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": {\n    \"client_status\": {\n      \"requests_remaining\": 95,\n      \"reset_time\": 1732621960,\n      \"limit\": 100,\n      \"window_seconds\": 3600\n    },\n    \"global_stats\": {\n      \"total_requests\": 1250,\n      \"active_clients\": 5,\n      \"rate_limited_clients\": 0\n    },\n    \"client_ip\": \"127.0.0.1\",\n    \"user_id\": \"admin\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Reset Rate Limits",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"identifier\": \"127.0.0.1\",\n  \"scope\": \"ip\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/tools/reset-rate-limits",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"tools",
+								"reset-rate-limits"
+							]
+						},
+						"description": "Reset rate limits for specific identifier or all"
+					},
+					"response": [
+						{
+							"name": "Rate Limits Reset",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"identifier\": \"127.0.0.1\",\n  \"scope\": \"ip\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tools/reset-rate-limits",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tools",
+										"reset-rate-limits"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": {\n    \"reset_count\": 1,\n    \"scope\": \"ip\",\n    \"identifier\": \"127.0.0.1\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Request Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/logs/requests?limit=100",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"logs",
+								"requests"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						},
+						"description": "Get recent API request logs"
+					},
+					"response": [
+						{
+							"name": "Request Logs",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/logs/requests?limit=100",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"logs",
+										"requests"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "100"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"request_id\": \"req_20250127_133240_001\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n      \"endpoint\": \"/prediction_agent/tools/predict\",\n      \"status\": \"success\",\n      \"processing_time_ms\": 245.67,\n      \"user_id\": \"admin\"\n    }\n  ],\n  \"metadata\": {\n    \"count\": 100,\n    \"total_requests\": 1250\n  }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🤖 ML Predictions",
+			"item": [
+				{
+					"name": "Predict Single Symbol",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\"],\n  \"horizon\": \"daily\",\n  \"risk_profile\": {\n    \"stop_loss_pct\": 2.0,\n    \"capital_risk_pct\": 1.5,\n    \"drawdown_limit_pct\": 10.0\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/predict",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"predict"
+							]
+						},
+						"description": "Get ML prediction for specific symbols with detailed analysis"
+					},
+					"response": [
+						{
+							"name": "Successful Prediction",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"symbols\": [\"AAPL\"],\n  \"horizon\": \"daily\",\n  \"risk_profile\": {\n    \"stop_loss_pct\": 2.0,\n    \"capital_risk_pct\": 1.5,\n    \"drawdown_limit_pct\": 10.0\n  }\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/predict",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"predict"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"horizon\": \"daily\",\n      \"predicted_price\": 185.23,\n      \"confidence\": 0.7234,\n      \"score\": 0.7891,\n      \"action\": \"long\",\n      \"risk_applied\": {\n        \"stop_loss_pct\": 2.0,\n        \"capital_risk_pct\": 1.5,\n        \"drawdown_limit_pct\": 10.0\n      },\n      \"reason\": \"RSI oversold at 28.3 | Strong bullish MACD | Strong uptrend | Strong bullish signal\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n      \"model_version\": \"ensemble-v2.1\",\n      \"_debug\": {\n        \"matched_symbol\": \"AAPL\",\n        \"rl_score_raw\": 0.3203,\n        \"rl_score_normalized\": 0.716,\n        \"enhanced_score\": 0.8234,\n        \"combined_score\": 0.7891,\n        \"current_price\": 175.50\n      }\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Predict Multiple Symbols",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\", \"MSFT\", \"GOOGL\"],\n  \"horizon\": \"daily\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/predict",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"predict"
+							]
+						},
+						"description": "Get ML predictions for multiple symbols"
+					},
+					"response": [
+						{
+							"name": "Multiple Predictions",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\", \"MSFT\", \"GOOGL\"],\n  \"horizon\": \"daily\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/predict",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"predict"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"horizon\": \"daily\",\n      \"predicted_price\": 185.23,\n      \"confidence\": 0.7234,\n      \"score\": 0.7891,\n      \"action\": \"long\",\n      \"reason\": \"Strong bullish MACD | RSI oversold\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n    },\n    {\n      \"symbol\": \"TSLA\",\n      \"horizon\": \"daily\",\n      \"predicted_price\": 245.67,\n      \"confidence\": 0.6891,\n      \"score\": 0.7123,\n      \"action\": \"long\",\n      \"reason\": \"Moderate uptrend | Neutral RSI\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Scan All Symbols",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"horizon\": \"daily\",\n  \"top_k\": 10,\n  \"min_score\": 0.5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/scan_all",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"scan_all"
+							]
+						},
+						"description": "Scan all symbols in feature store and return top-ranked"
+					},
+					"response": [
+						{
+							"name": "Scan Results",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"horizon\": \"daily\",\n  \"top_k\": 10,\n  \"min_score\": 0.5\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/scan_all",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"scan_all"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"horizon\": \"daily\",\n      \"predicted_price\": 185.23,\n      \"confidence\": 0.7234,\n      \"score\": 0.7891,\n      \"action\": \"long\",\n      \"reason\": \"Strong bullish MACD | RSI oversold\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n    },\n    {\n      \"symbol\": \"TSLA\",\n      \"horizon\": \"daily\",\n      \"predicted_price\": 245.67,\n      \"confidence\": 0.6891,\n      \"score\": 0.7123,\n      \"action\": \"long\",\n      \"reason\": \"Moderate uptrend | Neutral RSI\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n    }\n  ],\n  \"summary\": {\n    \"total_scanned\": 143,\n    \"long_signals\": 45,\n    \"short_signals\": 38,\n    \"hold_signals\": 60,\n    \"avg_confidence\": 0.6234\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Analyze Symbols",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\"],\n  \"horizon\": \"daily\",\n  \"detailed\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/analyze",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"analyze"
+							]
+						},
+						"description": "Analyze specific symbols with detailed technical indicators"
+					},
+					"response": [
+						{
+							"name": "Analysis Results",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\"],\n  \"horizon\": \"daily\",\n  \"detailed\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/analyze",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"analyze"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"technical_indicators\": {\n        \"rsi_14\": 28.3,\n        \"macd\": 2.45,\n        \"macd_signal\": 1.23,\n        \"macd_histogram\": 1.22,\n        \"bb_upper\": 185.50,\n        \"bb_lower\": 165.20,\n        \"bb_middle\": 175.35,\n        \"sma_20\": 175.20,\n        \"ema_12\": 175.45,\n        \"ema_26\": 175.10\n      },\n      \"prediction\": {\n        \"action\": \"long\",\n        \"confidence\": 0.7234,\n        \"score\": 0.7891,\n        \"reason\": \"RSI oversold at 28.3 | Strong bullish MACD\"\n      },\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Confirm Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"request_id\": \"req_20250127_133240_001\",\n  \"confirmation_type\": \"execute\",\n  \"user_notes\": \"Execute this trade based on prediction\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/confirm",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"confirm"
+							]
+						},
+						"description": "Confirm, reject, or modify a previous request"
+					},
+					"response": [
+						{
+							"name": "Request Confirmed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"request_id\": \"req_20250127_133240_001\",\n  \"confirmation_type\": \"execute\",\n  \"user_notes\": \"Execute this trade based on prediction\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/confirm",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"confirm"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": {\n    \"request_id\": \"req_20250127_133240_001\",\n    \"confirmation_type\": \"execute\",\n    \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n    \"status\": \"processed\",\n    \"action\": \"Request will be executed\",\n    \"user_notes\": \"Execute this trade based on prediction\"\n  },\n  \"metadata\": {\n    \"confirmation_id\": \"conf_req_20250127_133240_001_1732621960\",\n    \"processed_at\": \"2025-01-27T13:32:40.717Z\"\n  }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🧠 Reinforcement Learning",
+			"item": [
+				{
+					"name": "Train RL Agent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"agent_type\": \"linucb\",\n  \"rounds\": 100,\n  \"top_k\": 20,\n  \"horizon\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/train_rl",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"train_rl"
+							]
+						},
+						"description": "Train the reinforcement learning agent"
+					},
+					"response": [
+						{
+							"name": "Training Complete",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"agent_type\": \"linucb\",\n  \"rounds\": 100,\n  \"top_k\": 20,\n  \"horizon\": 1\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/train_rl",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"train_rl"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"RL agent training completed successfully\",\n  \"training_results\": {\n    \"agent_type\": \"linucb\",\n    \"rounds_completed\": 100,\n    \"top_k\": 20,\n    \"horizon\": 1,\n    \"final_reward\": 0.7234,\n    \"convergence_round\": 67,\n    \"training_time_seconds\": 45.2,\n    \"model_saved\": true\n  },\n  \"performance_metrics\": {\n    \"accuracy\": 0.6891,\n    \"sharpe_ratio\": 1.234,\n    \"max_drawdown\": 0.0891,\n    \"win_rate\": 0.6234\n  },\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Submit Feedback",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbol\": \"AAPL\",\n  \"predicted_action\": \"long\",\n  \"user_feedback\": \"correct\",\n  \"horizon\": \"daily\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/feedback",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"feedback"
+							]
+						},
+						"description": "Submit feedback for prediction accuracy"
+					},
+					"response": [
+						{
+							"name": "Feedback Accepted",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"symbol\": \"AAPL\",\n  \"predicted_action\": \"long\",\n  \"user_feedback\": \"correct\",\n  \"horizon\": \"daily\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/feedback",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"feedback"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Feedback recorded successfully\",\n  \"feedback_id\": \"fb_20250127_133240_001\",\n  \"symbol\": \"AAPL\",\n  \"predicted_action\": \"long\",\n  \"user_feedback\": \"correct\",\n  \"horizon\": \"daily\",\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n  \"impact\": {\n    \"model_updated\": true,\n    \"rl_agent_updated\": true,\n    \"confidence_adjustment\": 0.01\n  }\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "📊 Data Management",
+			"item": [
+				{
+					"name": "Fetch Data",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\", \"MSFT\"],\n  \"source\": \"auto\",\n  \"period\": \"6mo\",\n  \"interval\": \"1d\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/fetch_data",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"prediction_agent",
+								"tools",
+								"fetch_data"
+							]
+						},
+						"description": "Fetch market data for specified symbols"
+					},
+					"response": [
+						{
+							"name": "Data Fetched",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\", \"MSFT\"],\n  \"source\": \"auto\",\n  \"period\": \"6mo\",\n  \"interval\": \"1d\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/prediction_agent/tools/fetch_data",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"prediction_agent",
+										"tools",
+										"fetch_data"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Data fetch completed successfully\",\n  \"data_summary\": {\n    \"symbols_fetched\": 3,\n    \"total_records\": 378,\n    \"period\": \"6mo\",\n    \"interval\": \"1d\",\n    \"sources_used\": [\"yahoo_finance\", \"alpha_vantage\"]\n  },\n  \"symbols\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"records\": 126,\n      \"source\": \"yahoo_finance\",\n      \"date_range\": {\n        \"start\": \"2024-07-27\",\n        \"end\": \"2025-01-27\"\n      }\n    }\n  ],\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🖥️ Frontend Integration",
+			"item": [
+				{
+					"name": "Get Dashboard Data",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/data/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"data",
+								"dashboard"
+							]
+						},
+						"description": "Get dashboard data for frontend integration"
+					},
+					"response": [
+						{
+							"name": "Dashboard Data",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/data/dashboard",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"data",
+										"dashboard"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n  \"stats\": {\n    \"total_requests\": 1250,\n    \"successful_requests\": 1180,\n    \"failed_requests\": 70,\n    \"success_rate\": 94.4,\n    \"avg_processing_time_ms\": 245.67,\n    \"active_requests\": 5,\n    \"bucket_entries\": 3420\n  },\n  \"recent_predictions\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n      \"data\": {\n        \"action\": \"long\",\n        \"confidence\": 0.7234,\n        \"predicted_price\": 185.23,\n        \"reason\": \"Strong bullish MACD | RSI oversold\"\n      }\n    }\n  ],\n  \"recent_trades\": [\n    {\n      \"symbol\": \"TSLA\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n      \"data\": {\n        \"action\": \"buy\",\n        \"quantity\": 100,\n        \"executed_price\": 245.67,\n        \"status\": \"filled\"\n      }\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Live Feed",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/feed/live?symbol=AAPL&limit=50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"feed",
+								"live"
+							],
+							"query": [
+								{
+									"key": "symbol",
+									"value": "AAPL"
+								},
+								{
+									"key": "limit",
+									"value": "50"
+								}
+							]
+						},
+						"description": "Get live feed data for frontend integration"
+					},
+					"response": [
+						{
+							"name": "Live Feed Data",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/feed/live?symbol=AAPL&limit=50",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"feed",
+										"live"
+									],
+									"query": [
+										{
+											"key": "symbol",
+											"value": "AAPL"
+										},
+										{
+											"key": "limit",
+											"value": "50"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n  \"symbols\": [\n    {\n      \"symbol\": \"AAPL\",\n      \"latest_prediction\": {\n        \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n        \"data\": {\n          \"action\": \"long\",\n          \"confidence\": 0.7234,\n          \"predicted_price\": 185.23\n        }\n      },\n      \"prediction_history\": [\n        {\n          \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n          \"data\": {\n            \"action\": \"long\",\n            \"confidence\": 0.7234,\n            \"predicted_price\": 185.23\n          }\n        }\n      ],\n      \"confidence_trend\": [0.72, 0.68, 0.75, 0.73],\n      \"action_trend\": [\"long\", \"hold\", \"long\", \"long\"]\n    }\n  ],\n  \"total_symbols\": 143\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "🛡️ Resilience System",
+			"item": [
+				{
+					"name": "Get Resilience Health",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/resilience/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"resilience",
+								"health"
+							]
+						},
+						"description": "Get resilience system health status"
+					},
+					"response": [
+						{
+							"name": "Resilience Health",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/resilience/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"resilience",
+										"health"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"status\": \"healthy\",\n  \"health_score\": 0.923,\n  \"stats\": {\n    \"total_validations\": 1250,\n    \"failed_validations\": 95,\n    \"mismatch_alerts\": 12,\n    \"halt_signals_triggered\": 0,\n    \"retry_attempts\": 45,\n    \"successful_retries\": 38\n  },\n  \"active_alerts\": 3,\n  \"halt_signals\": 0,\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Resilience Alerts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/resilience/alerts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"resilience",
+								"alerts"
+							]
+						},
+						"description": "Get active resilience alerts"
+					},
+					"response": [
+						{
+							"name": "Resilience Alerts",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/resilience/alerts",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"resilience",
+										"alerts"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"data\": [\n    {\n      \"alert_id\": \"alert_20250127_133240_001\",\n      \"timestamp\": \"2025-01-27T13:32:40.717Z\",\n      \"severity\": \"medium\",\n      \"field\": \"confidence\",\n      \"expected\": \"0.0-1.0\",\n      \"actual\": 1.2,\n      \"difference\": 0.2,\n      \"threshold\": 0.03,\n      \"context\": {\n        \"symbol\": \"AAPL\",\n        \"request_id\": \"req_123456\"\n      }\n    }\n  ],\n  \"count\": 1\n}"
+						}
+					]
+				},
+				{
+					"name": "Resolve Alert",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/resilience/alerts/alert_20250127_133240_001/resolve",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"resilience",
+								"alerts",
+								"alert_20250127_133240_001",
+								"resolve"
+							]
+						},
+						"description": "Resolve a specific alert"
+					},
+					"response": [
+						{
+							"name": "Alert Resolved",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/resilience/alerts/alert_20250127_133240_001/resolve",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"resilience",
+										"alerts",
+										"alert_20250127_133240_001",
+										"resolve"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Alert alert_20250127_133240_001 resolved\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "📈 Analytics & Reports",
+			"item": [
+				{
+					"name": "Get Performance Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/performance?period=30d",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"performance"
+							],
+							"query": [
+								{
+									"key": "period",
+									"value": "30d"
+								}
+							]
+						},
+						"description": "Get performance analytics report"
+					},
+					"response": [
+						{
+							"name": "Performance Report",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/analytics/performance?period=30d",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"analytics",
+										"performance"
+									],
+									"query": [
+										{
+											"key": "period",
+											"value": "30d"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"report\": {\n    \"period\": \"30d\",\n    \"performance_metrics\": {\n      \"total_return\": 5.23,\n      \"annualized_return\": 63.45,\n      \"volatility\": 18.67,\n      \"sharpe_ratio\": 1.234,\n      \"max_drawdown\": 8.5,\n      \"win_rate\": 62.34,\n      \"profit_factor\": 1.89,\n      \"avg_trade_duration\": \"2.3 days\"\n    },\n    \"model_performance\": {\n      \"ml_accuracy\": 68.91,\n      \"rl_accuracy\": 72.34,\n      \"ensemble_accuracy\": 71.23,\n      \"prediction_confidence_avg\": 0.6234\n    },\n    \"top_performers\": [\n      {\n        \"symbol\": \"AAPL\",\n        \"return\": 8.45,\n        \"trades\": 12,\n        \"win_rate\": 75.0\n      },\n      {\n        \"symbol\": \"TSLA\",\n        \"return\": 6.78,\n        \"trades\": 8,\n        \"win_rate\": 62.5\n      }\n    ],\n    \"risk_analysis\": {\n      \"var_95\": 2500.00,\n      \"var_99\": 4200.00,\n      \"beta\": 0.89,\n      \"correlation_spy\": 0.67\n    }\n  },\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Model Analytics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/analytics/models",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"analytics",
+								"models"
+							]
+						},
+						"description": "Get detailed model analytics and performance"
+					},
+					"response": [
+						{
+							"name": "Model Analytics",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/analytics/models",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"analytics",
+										"models"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"models\": {\n    \"enhanced_lightgbm\": {\n      \"version\": \"v2.1\",\n      \"accuracy\": 0.6891,\n      \"precision\": 0.7234,\n      \"recall\": 0.6789,\n      \"f1_score\": 0.7001,\n      \"feature_importance\": [\n        {\"feature\": \"rsi_14\", \"importance\": 0.1234},\n        {\"feature\": \"macd_hist\", \"importance\": 0.0987},\n        {\"feature\": \"bb_upper\", \"importance\": 0.0876}\n      ],\n      \"last_trained\": \"2025-01-27T13:32:40.717Z\",\n      \"training_samples\": 36322\n    },\n    \"rl_agent\": {\n      \"algorithm\": \"linucb\",\n      \"accuracy\": 0.7234,\n      \"sharpe_ratio\": 1.234,\n      \"total_rewards\": 72.34,\n      \"episodes_trained\": 100,\n      \"convergence_episode\": 67,\n      \"last_trained\": \"2025-01-27T13:32:40.717Z\"\n    }\n  },\n  \"ensemble_performance\": {\n    \"combined_accuracy\": 0.7123,\n    \"weight_lightgbm\": 0.6,\n    \"weight_rl\": 0.4\n  },\n  \"timestamp\": \"2025-01-27T13:32:40.717Z\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-set JWT token if not already set",
+					"if (!pm.environment.get('jwt_token')) {",
+					"    pm.sendRequest({",
+					"        url: pm.environment.get('base_url') + '/auth/token',",
+					"        method: 'POST',",
+					"        header: {",
+					"            'Content-Type': 'application/json'",
+					"        },",
+					"        body: {",
+					"            mode: 'raw',",
+					"            raw: JSON.stringify({",
+					"                username: 'admin',",
+					"                password: 'admin123'",
+					"            })",
+					"        }",
+					"    }, function (err, response) {",
+					"        if (response.json().access_token) {",
+					"            pm.environment.set('jwt_token', response.json().access_token);",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save JWT token from auth response",
+					"if (pm.response.json().access_token) {",
+					"    pm.environment.set('jwt_token', pm.response.json().access_token);",
+					"    console.log('JWT token saved to environment');",
+					"}",
+					"",
+					"// Basic response validation",
+					"pm.test('Response status is successful', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});",
+					"",
+					"pm.test('Response time is acceptable', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});",
+					"",
+					"pm.test('Response has valid JSON', function () {",
+					"    pm.response.to.be.json;",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string",
+			"description": "Base URL for the Blackhole Infiverse API"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT authentication token (auto-populated)"
+		},
+		{
+			"key": "api_version",
+			"value": "v1.0.0",
+			"type": "string",
+			"description": "API version"
+		},
+		{
+			"key": "default_symbols",
+			"value": "AAPL,TSLA,MSFT,GOOGL",
+			"type": "string",
+			"description": "Default symbols for testing"
+		}
+	]
+}

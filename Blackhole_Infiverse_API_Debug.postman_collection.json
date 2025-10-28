@@ -1,0 +1,262 @@
+{
+	"info": {
+		"_postman_id": "blackhole-infiverse-api-debug-v1",
+		"name": "Blackhole Infiverse API - Debug Collection",
+		"description": "Simplified collection to debug API issues",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Get JWT Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/token",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "token"]
+						},
+						"description": "Get JWT token for authentication"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏥 System Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/tools/health",
+							"host": ["{{base_url}}"],
+							"path": ["tools", "health"]
+						},
+						"description": "Check if API and models are working"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🤖 ML Predictions",
+			"item": [
+				{
+					"name": "Predict Single Symbol (Minimal)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\"],\n  \"horizon\": \"daily\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/predict",
+							"host": ["{{base_url}}"],
+							"path": ["prediction_agent", "tools", "predict"]
+						},
+						"description": "Minimal prediction request - should work if API is properly configured"
+					},
+					"response": []
+				},
+				{
+					"name": "Predict Single Symbol (With Risk Profile)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\"],\n  \"horizon\": \"daily\",\n  \"risk_profile\": {\n    \"stop_loss_pct\": 2.0,\n    \"capital_risk_pct\": 1.5,\n    \"drawdown_limit_pct\": 10.0\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/predict",
+							"host": ["{{base_url}}"],
+							"path": ["prediction_agent", "tools", "predict"]
+						},
+						"description": "Prediction request with risk profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Predict Multiple Symbols",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"symbols\": [\"AAPL\", \"TSLA\", \"MSFT\"],\n  \"horizon\": \"daily\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/prediction_agent/tools/predict",
+							"host": ["{{base_url}}"],
+							"path": ["prediction_agent", "tools", "predict"]
+						},
+						"description": "Predict multiple symbols at once"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔍 Debug Endpoints",
+			"item": [
+				{
+					"name": "Rate Limit Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/tools/rate-limit-status",
+							"host": ["{{base_url}}"],
+							"path": ["tools", "rate-limit-status"]
+						},
+						"description": "Check current rate limit status"
+					},
+					"response": []
+				},
+				{
+					"name": "Request Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/logs/requests?limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["logs", "requests"],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get recent request logs"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-get JWT token if not set",
+					"if (!pm.environment.get('jwt_token')) {",
+					"    pm.sendRequest({",
+					"        url: pm.environment.get('base_url') + '/auth/token',",
+					"        method: 'POST',",
+					"        header: {",
+					"            'Content-Type': 'application/json'",
+					"        },",
+					"        body: {",
+					"            mode: 'raw',",
+					"            raw: JSON.stringify({",
+					"                username: 'admin',",
+					"                password: 'admin123'",
+					"            })",
+					"        }",
+					"    }, function (err, response) {",
+					"        if (response && response.json() && response.json().access_token) {",
+					"            pm.environment.set('jwt_token', response.json().access_token);",
+					"            console.log('JWT token auto-set');",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save JWT token",
+					"if (pm.response.json() && pm.response.json().access_token) {",
+					"    pm.environment.set('jwt_token', pm.response.json().access_token);",
+					"    console.log('JWT token saved');",
+					"}",
+					"",
+					"// Log response for debugging",
+					"console.log('Response Status:', pm.response.code);",
+					"console.log('Response Time:', pm.response.responseTime + 'ms');",
+					"",
+					"// Basic tests",
+					"pm.test('Response status is successful', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});",
+					"",
+					"pm.test('Response time is acceptable', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(10000);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

@@ -1,0 +1,35 @@
+{
+  "tools": [
+    {
+      "name": "predict",
+      "description": "Generate trading predictions"
+    },
+    {
+      "name": "scan_all",
+      "description": "Scan all symbols"
+    },
+    {
+      "name": "analyze",
+      "description": "Analyze symbols"
+    },
+    {
+      "name": "confirm",
+      "description": "Confirm, reject, or modify requests"
+    },
+    {
+      "name": "feedback",
+      "description": "Provide feedback"
+    },
+    {
+      "name": "train_rl",
+      "description": "Train RL agent"
+    },
+    {
+      "name": "fetch_data",
+      "description": "Fetch data"
+    }
+  ],
+  "version": "2.1.0-fixed",
+  "description": "Prediction Agent MCP Tools - Fixed Symbol Matching",
+  "created_at": "2025-10-28T12:08:14.524260"
+}
