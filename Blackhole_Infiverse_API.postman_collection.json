@@ -1,100 +1,146 @@
 {
-	"info": {
-    "name": "Blackhole Infiverse API (Unified)",
+  "info": {
+    "name": "Blackhole Infiverse API - End to End",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_postman_id": "bhiv-unified-collection"
-	},
-	"item": [
-		{
+    "_postman_id": "bhiv-e2e-collection"
+  },
+  "item": [
+    {
       "name": "Auth: Get Token",
-					"request": {
-						"method": "POST",
-						"header": [
-          { "key": "Content-Type", "value": "application/json" }
-						],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
         "url": { "raw": "{{base_url}}/auth/token", "host": ["{{base_url}}"], "path": ["auth","token"] },
-						"body": {
-							"mode": "raw",
-          "raw": "{\n  \"username\": \"demo\",\n  \"password\": \"demo\"\n}"
-        }
-      },
-      "response": []
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"demo\",\n  \"password\": \"demo\"\n}" }
+      }
     },
     {
-      "name": "Prediction: Analyze (Full Signals)",
-      "event": [
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "if (!pm.environment.get('jwt_token')) {",
-              "  pm.sendRequest({",
-              "    url: pm.environment.get('base_url') + '/auth/token',",
-              "    method: 'POST',",
-              "    header: { 'Content-Type': 'application/json' },",
-              "    body: { mode: 'raw', raw: JSON.stringify({ username: 'demo', password: 'demo' }) }",
-              "  }, function (err, res) {",
-              "    if (!err && res.code === 200) {",
-              "      var token = res.json().access_token;",
-              "      pm.environment.set('jwt_token', token);",
-              "    }",
-              "  });",
-              "}"
-            ],
-            "type": "text/javascript"
-          }
+      "name": "System: Health",
+      "event": [{
+        "listen": "prerequest",
+        "script": {
+          "exec": [
+            "if (!pm.environment.get('jwt_token')) {",
+            "  pm.sendRequest({ url: pm.environment.get('base_url') + '/auth/token', method: 'POST', header: { 'Content-Type': 'application/json' }, body: { mode: 'raw', raw: JSON.stringify({ username: 'demo', password: 'demo' }) } }, function (err, res) { if (!err && res.code === 200) { pm.environment.set('jwt_token', res.json().access_token); } });",
+            "}"
+          ],
+          "type": "text/javascript"
         }
-      ],
-					"request": {
-						"method": "POST",
-						"header": [
+      }],
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": { "raw": "{{base_url}}/tools/health", "host": ["{{base_url}}"], "path": ["tools","health"] }
+      }
+    },
+    {
+      "name": "Data: Fetch",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{base_url}}/prediction_agent/tools/fetch_data", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","fetch_data"] },
+        "body": { "mode": "raw", "raw": "{\n  \"symbols\": [\"AAPL\", \"MSFT\", \"TSLA\"],\n  \"period\": \"6mo\",\n  \"interval\": \"1d\"\n}" }
+      }
+    },
+    {
+      "name": "Analysis: Analyze (detailed)",
+      "request": {
+        "method": "POST",
+        "header": [
           { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
           { "key": "Content-Type", "value": "application/json" }
         ],
         "url": { "raw": "{{base_url}}/prediction_agent/tools/analyze", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","analyze"] },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"symbols\": [\"AAPL\", \"MSFT\"],\n  \"horizon\": \"daily\",\n  \"detailed\": true\n}"
-        }
-      },
-      "response": []
+        "body": { "mode": "raw", "raw": "{\n  \"symbols\": [\"AAPL\", \"MSFT\"],\n  \"horizon\": \"daily\",\n  \"detailed\": true\n}" }
+      }
     },
     {
       "name": "Prediction: Predict",
-					"request": {
-						"method": "POST",
-						"header": [
+      "request": {
+        "method": "POST",
+        "header": [
           { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
           { "key": "Content-Type", "value": "application/json" }
         ],
         "url": { "raw": "{{base_url}}/prediction_agent/tools/predict", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","predict"] },
-						"body": {
-							"mode": "raw",
-          "raw": "{\n  \"symbols\": [\"AAPL\", \"MSFT\"],\n  \"horizon\": \"daily\"\n}"
-        }
-      },
-      "response": []
+        "body": { "mode": "raw", "raw": "{\n  \"symbols\": [\"AAPL\", \"MSFT\"],\n  \"horizon\": \"daily\"\n}" }
+      }
     },
     {
       "name": "Prediction: Scan All",
-					"request": {
-						"method": "POST",
-						"header": [
+      "request": {
+        "method": "POST",
+        "header": [
           { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
           { "key": "Content-Type", "value": "application/json" }
         ],
         "url": { "raw": "{{base_url}}/prediction_agent/tools/scan_all", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","scan_all"] },
-						"body": {
-							"mode": "raw",
-          "raw": "{\n  \"top_k\": 10,\n  \"min_score\": 0.0\n}"
-        }
-      },
-      "response": []
-		}
-	],
-	"variable": [
+        "body": { "mode": "raw", "raw": "{\n  \"top_k\": 10,\n  \"min_score\": 0.0\n}" }
+      }
+    },
+    {
+      "name": "Training: Feedback",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{base_url}}/prediction_agent/tools/feedback", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","feedback"] },
+        "body": { "mode": "raw", "raw": "{\n  \"symbol\": \"AAPL\",\n  \"predicted_action\": \"long\",\n  \"user_feedback\": \"correct\",\n  \"horizon\": \"daily\"\n}" }
+      }
+    },
+    {
+      "name": "Training: Train RL",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": { "raw": "{{base_url}}/prediction_agent/tools/train_rl", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","train_rl"] },
+        "body": { "mode": "raw", "raw": "{\n  \"agent_type\": \"linucb\",\n  \"rounds\": 20,\n  \"top_k\": 10,\n  \"horizon\": 1\n}" }
+      }
+    },
+    {
+      "name": "System: Rate Limit Status",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": { "raw": "{{base_url}}/tools/rate-limit-status", "host": ["{{base_url}}"], "path": ["tools","rate-limit-status"] }
+      }
+    },
+    {
+      "name": "System: Request Logs",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": { "raw": "{{base_url}}/logs/requests?limit=50", "host": ["{{base_url}}"], "path": ["logs","requests"], "query": [{"key":"limit","value":"50"}] }
+      }
+    },
+    {
+      "name": "Resilience: Health",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": { "raw": "{{base_url}}/resilience/health", "host": ["{{base_url}}"], "path": ["resilience","health"] }
+      }
+    },
+    {
+      "name": "Resilience: Alerts",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{jwt_token}}" }],
+        "url": { "raw": "{{base_url}}/resilience/alerts", "host": ["{{base_url}}"], "path": ["resilience","alerts"] }
+      }
+    }
+  ],
+  "variable": [
     { "key": "base_url", "value": "http://localhost:8000" },
     { "key": "jwt_token", "value": "" }
-	]
+  ]
 }
 
