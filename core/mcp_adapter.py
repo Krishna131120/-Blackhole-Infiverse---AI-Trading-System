@@ -869,40 +869,56 @@ class MCPAdapter:
                     price = float(df[close_col].iloc[-1])
                     feature_vector, feature_series = self._extract_features_safely(df)
                     
-                    # Extract comprehensive indicators for output (only those present)
+                    # Extract indicators
                     signals = {}
-                    indicator_groups = [
-                        # Momentum
-                        ['rsi_14','rsi_21','stoch_k','stoch_d','williams_r','cci','mfi','trix','cmo','aroon_up','aroon_down','aroon_oscillator','ultimate_oscillator','roc_5','roc_10','roc_20','momentum'],
-                        # Trend/MA
-                        ['sma_10','sma_20','sma_50','sma_200','ema_12','ema_20','ema_26','ema_50','adx','plus_di','minus_di','psar','ma_alignment_sma','ma_alignment_ema','trend_direction'],
-                        # Channels
-                        ['keltner_upper','keltner_middle','keltner_lower','donchian_upper','donchian_middle','donchian_lower'],
-                        # MACD
-                        ['macd','macd_signal','macd_hist','macd_hist_z'],
-                        # Volatility
-                        ['bb_upper','bb_middle','bb_lower','bb_width','bb_position','atr','std_10','std_20','volatility_10','volatility_20'],
-                        # Volume
-                        ['volume_ratio','volume_sma_20','volume_change','volume_roc_5','obv','adl','cmf','emv','volume_trend'],
-                        # Price features
-                        ['price_change','price_change_5','price_change_20','hl_range','close_position','price_to_sma_10','price_to_sma_20','price_to_sma_50','price_to_sma_200','vwap','sharpe_ratio','beta','alpha'],
-                        # Support/Resistance
-                        ['pivot','support_1','support_2','resistance_1','resistance_2','fib_23.6','fib_38.2','fib_50.0','fib_61.8'],
-                        # Patterns
-                        ['doji','hammer','engulfing']
-                    ]
-
-                    for group in indicator_groups:
-                        for indicator in group:
-                            if indicator in feature_series.index:
+                    if request.detailed:
+                        # Return ALL computed features for the last row (exclude OHLCV/metadata/targets)
+                        exclude_cols = [
+                            'open','high','low','close','volume','adj_close',
+                            'symbol','source','fetch_timestamp','date','Date',
+                            'target','target_return','target_direction','target_binary'
+                        ]
+                        for col, val in feature_series.items():
+                            if col not in exclude_cols:
                                 try:
-                                    signals[indicator] = round(float(feature_series[indicator]), 4)
+                                    signals[col] = round(float(val), 6)
                                 except Exception:
-                                    # Cast ints cleanly
                                     try:
-                                        signals[indicator] = int(feature_series[indicator])
+                                        signals[col] = int(val)
                                     except Exception:
                                         pass
+                    else:
+                        # Curated comprehensive subset
+                        indicator_groups = [
+                            # Momentum
+                            ['rsi_14','rsi_21','stoch_k','stoch_d','williams_r','cci','mfi','trix','cmo','aroon_up','aroon_down','aroon_oscillator','ultimate_oscillator','roc_5','roc_10','roc_20','momentum'],
+                            # Trend/MA
+                            ['sma_10','sma_20','sma_50','sma_200','ema_12','ema_20','ema_26','ema_50','adx','plus_di','minus_di','psar','ma_alignment_sma','ma_alignment_ema','trend_direction'],
+                            # Channels
+                            ['keltner_upper','keltner_middle','keltner_lower','donchian_upper','donchian_middle','donchian_lower'],
+                            # MACD
+                            ['macd','macd_signal','macd_hist','macd_hist_z'],
+                            # Volatility
+                            ['bb_upper','bb_middle','bb_lower','bb_width','bb_position','atr','std_10','std_20','volatility_10','volatility_20'],
+                            # Volume
+                            ['volume_ratio','volume_sma_20','volume_change','volume_roc_5','obv','adl','cmf','emv','volume_trend'],
+                            # Price features
+                            ['price_change','price_change_5','price_change_20','hl_range','close_position','price_to_sma_10','price_to_sma_20','price_to_sma_50','price_to_sma_200','vwap','sharpe_ratio','beta','alpha'],
+                            # Support/Resistance
+                            ['pivot','support_1','support_2','resistance_1','resistance_2','fib_23.6','fib_38.2','fib_50.0','fib_61.8'],
+                            # Patterns
+                            ['doji','hammer','engulfing']
+                        ]
+                        for group in indicator_groups:
+                            for indicator in group:
+                                if indicator in feature_series.index:
+                                    try:
+                                        signals[indicator] = round(float(feature_series[indicator]), 4)
+                                    except Exception:
+                                        try:
+                                            signals[indicator] = int(feature_series[indicator])
+                                        except Exception:
+                                            pass
                     
                     # Add sentiment analysis (mapped to requested items if available)
                     sentiment_data = self.sentiment_analyzer.compute_market_sentiment_features(requested_symbol)

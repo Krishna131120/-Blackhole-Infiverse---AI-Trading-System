@@ -136,7 +136,15 @@ POST /prediction_agent/tools/analyze
   "symbols": ["AAPL", "MSFT", "TSLA"]
 }
 ```
-**Output:** Complete technical analysis with all indicators
+**Output:**
+- Set `detailed: true` to return ALL computed indicators (≈86 technical + 13 sentiment)
+```json
+{
+  "symbols": ["AAPL"],
+  "horizon": "daily",
+  "detailed": true
+}
+```
 
 ### 3. **Scan All Stocks**
 ```bash

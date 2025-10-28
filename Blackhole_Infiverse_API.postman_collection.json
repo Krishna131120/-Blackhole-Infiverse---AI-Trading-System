@@ -52,8 +52,8 @@
           { "key": "Content-Type", "value": "application/json" }
         ],
         "url": { "raw": "{{base_url}}/prediction_agent/tools/analyze", "host": ["{{base_url}}"], "path": ["prediction_agent","tools","analyze"] },
-						"body": {
-							"mode": "raw",
+        "body": {
+          "mode": "raw",
           "raw": "{\n  \"symbols\": [\"AAPL\", \"MSFT\"],\n  \"horizon\": \"daily\",\n  \"detailed\": true\n}"
         }
       },
