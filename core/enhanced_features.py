@@ -489,6 +489,69 @@ class EnhancedFeaturePipeline:
 
         return df
 
+    # ===================== DERIVED/AGGREGATE FEATURES =====================
+    def compute_derived_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Compute higher-level, derived features used in analysis output"""
+        # Moving Average Alignment: count of bullish alignments across common MAs
+        try:
+            sma_cols = [c for c in df.columns if c.startswith('sma_')]
+            ema_cols = [c for c in df.columns if c.startswith('ema_')]
+            for cols in [sma_cols, ema_cols]:
+                if {'sma_20', 'sma_50', 'sma_200'}.issubset(df.columns):
+                    df['ma_alignment_sma'] = ((df['sma_20'] > df['sma_50']) & (df['sma_50'] > df['sma_200'])).astype(int)
+                if {'ema_12', 'ema_26', 'ema_50'}.issubset(df.columns):
+                    df['ma_alignment_ema'] = ((df['ema_12'] > df['ema_26']) & (df['ema_26'] > df['ema_50'])).astype(int)
+        except Exception:
+            df['ma_alignment_sma'] = df.get('ma_alignment_sma', pd.Series(np.nan, index=df.index))
+            df['ma_alignment_ema'] = df.get('ma_alignment_ema', pd.Series(np.nan, index=df.index))
+
+        # Trend Direction: sign of short EMA slope
+        try:
+            if 'ema_20' in df.columns:
+                df['trend_direction'] = np.sign(df['ema_20'] - df['ema_20'].shift(3)).replace({np.nan: 0})
+            else:
+                df['trend_direction'] = np.sign(df['close'] - df['close'].shift(3)).replace({np.nan: 0})
+        except Exception:
+            df['trend_direction'] = 0
+
+        # Price-to-SMA ratios
+        for p in [10, 20, 50, 200]:
+            col = f'sma_{p}'
+            ratio_col = f'price_to_sma_{p}'
+            if col in df.columns:
+                df[ratio_col] = df['close'] / (df[col] + 1e-10)
+            else:
+                df[ratio_col] = np.nan
+
+        # Bollinger Band width already computed as bb_width
+        # Position in range already computed as close_position
+
+        # Volume Rate of Change (explicit)
+        df['volume_roc_5'] = df['volume'].pct_change(5)
+
+        # RSI Divergence (simple heuristic): price up while RSI down or vice versa over 5 periods
+        try:
+            if 'rsi_14' in df.columns:
+                price_delta = df['close'] - df['close'].shift(5)
+                rsi_delta = df['rsi_14'] - df['rsi_14'].shift(5)
+                df['rsi_divergence'] = np.where(
+                    ((price_delta > 0) & (rsi_delta < 0)) | ((price_delta < 0) & (rsi_delta > 0)),
+                    1, 0
+                )
+            else:
+                df['rsi_divergence'] = 0
+        except Exception:
+            df['rsi_divergence'] = 0
+
+        # MACD Histogram Analysis: normalized histogram
+        if 'macd_hist' in df.columns:
+            hist_std = df['macd_hist'].rolling(20).std()
+            df['macd_hist_z'] = df['macd_hist'] / (hist_std + 1e-10)
+        else:
+            df['macd_hist_z'] = np.nan
+
+        return df
+
     def compute_momentum_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """Compute momentum indicators"""
         for period in [5, 10, 20]:
@@ -657,6 +720,9 @@ class EnhancedFeaturePipeline:
             # Price Features
             df = self.compute_price_features(df)
             df = self.compute_momentum_features(df)
+
+            # Derived/Aggregate Features
+            df = self.compute_derived_features(df)
             
             # Support/Resistance
             df = self.compute_pivot_points(df)

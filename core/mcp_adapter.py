@@ -869,25 +869,68 @@ class MCPAdapter:
                     price = float(df[close_col].iloc[-1])
                     feature_vector, feature_series = self._extract_features_safely(df)
                     
-                    # Extract key indicators
+                    # Extract comprehensive indicators for output (only those present)
                     signals = {}
-                    key_indicators = [
-                        'rsi_14', 'macd_hist', 'volume_ratio', 'sma_20', 'sma_50', 'ema_20',
-                        'stoch_k', 'williams_r', 'cci', 'mfi', 'adx', 'bb_position',
-                        'vwap', 'sharpe_ratio', 'put_call_ratio', 'short_interest'
+                    indicator_groups = [
+                        # Momentum
+                        ['rsi_14','rsi_21','stoch_k','stoch_d','williams_r','cci','mfi','trix','cmo','aroon_up','aroon_down','aroon_oscillator','ultimate_oscillator','roc_5','roc_10','roc_20','momentum'],
+                        # Trend/MA
+                        ['sma_10','sma_20','sma_50','sma_200','ema_12','ema_20','ema_26','ema_50','adx','plus_di','minus_di','psar','ma_alignment_sma','ma_alignment_ema','trend_direction'],
+                        # Channels
+                        ['keltner_upper','keltner_middle','keltner_lower','donchian_upper','donchian_middle','donchian_lower'],
+                        # MACD
+                        ['macd','macd_signal','macd_hist','macd_hist_z'],
+                        # Volatility
+                        ['bb_upper','bb_middle','bb_lower','bb_width','bb_position','atr','std_10','std_20','volatility_10','volatility_20'],
+                        # Volume
+                        ['volume_ratio','volume_sma_20','volume_change','volume_roc_5','obv','adl','cmf','emv','volume_trend'],
+                        # Price features
+                        ['price_change','price_change_5','price_change_20','hl_range','close_position','price_to_sma_10','price_to_sma_20','price_to_sma_50','price_to_sma_200','vwap','sharpe_ratio','beta','alpha'],
+                        # Support/Resistance
+                        ['pivot','support_1','support_2','resistance_1','resistance_2','fib_23.6','fib_38.2','fib_50.0','fib_61.8'],
+                        # Patterns
+                        ['doji','hammer','engulfing']
                     ]
-                    for indicator in key_indicators:
-                        if indicator in feature_series.index:
-                            signals[indicator] = round(float(feature_series[indicator]), 4)
+
+                    for group in indicator_groups:
+                        for indicator in group:
+                            if indicator in feature_series.index:
+                                try:
+                                    signals[indicator] = round(float(feature_series[indicator]), 4)
+                                except Exception:
+                                    # Cast ints cleanly
+                                    try:
+                                        signals[indicator] = int(feature_series[indicator])
+                                    except Exception:
+                                        pass
                     
-                    # Add sentiment analysis
+                    # Add sentiment analysis (mapped to requested items if available)
                     sentiment_data = self.sentiment_analyzer.compute_market_sentiment_features(requested_symbol)
-                    signals.update({
-                        'sentiment_score': round(sentiment_data['composite_sentiment'], 4),
-                        'sentiment_momentum': round(sentiment_data['sentiment_momentum'], 4),
-                        'fear_greed_index': round(sentiment_data['fear_greed_index'], 2),
-                        'vix_sentiment': round(sentiment_data['vix_sentiment'], 2)
-                    })
+                    sentiment_keys = {
+                        'put_call_ratio': 'put_call_ratio',
+                        'order_book_imbalance': 'order_book_imbalance',
+                        'bid_ask_spread': 'bid_ask_spread',
+                        'short_interest': 'short_interest',
+                        'options_flow_sentiment': 'options_flow_sentiment',
+                        'sentiment_score': 'sentiment_score',
+                        'news_sentiment_trend': 'sentiment_trend',
+                        'social_sentiment': 'twitter_sentiment',
+                        'reddit_sentiment': 'reddit_sentiment',
+                        'social_volume': 'social_volume',
+                        'mentions_count': 'mentions_count',
+                        'fear_greed_index': 'fear_greed_index',
+                        'vix_sentiment': 'vix_sentiment'
+                    }
+                    for out_key, src_key in sentiment_keys.items():
+                        if src_key in sentiment_data:
+                            try:
+                                val = float(sentiment_data[src_key])
+                                signals[out_key] = round(val, 4)
+                            except Exception:
+                                try:
+                                    signals[out_key] = int(sentiment_data[src_key])
+                                except Exception:
+                                    pass
                     
                     # Get prediction
                     contexts = {matched_symbol: feature_vector}
@@ -917,6 +960,17 @@ class MCPAdapter:
                         'suggested_action': action,
                         'reason': reason,
                         'timestamp': datetime.now().isoformat()
+                    }
+                    # Ensure all requested headline groups exist for client display
+                    analysis['groups'] = {
+                        'momentum': ['rsi_14','stoch_k','williams_r','cci','mfi','trix','cmo','aroon_oscillator','ultimate_oscillator','roc_10','momentum'],
+                        'trend': ['sma_20','sma_50','sma_200','ema_12','ema_26','adx','psar','ma_alignment_sma','ma_alignment_ema','trend_direction'],
+                        'volatility': ['bb_width','bb_position','atr','std_20','volatility_20'],
+                        'volume': ['volume_ratio','obv','adl','cmf','emv','volume_trend'],
+                        'support_resistance': ['pivot','support_1','support_2','resistance_1','fib_38.2','fib_61.8'],
+                        'patterns': ['doji','hammer','engulfing'],
+                        'advanced': ['vwap','sharpe_ratio','beta','alpha','price_to_sma_50'],
+                        'sentiment': ['put_call_ratio','order_book_imbalance','bid_ask_spread','short_interest','options_flow_sentiment','sentiment_score','news_sentiment_trend','social_sentiment','fear_greed_index','vix_sentiment']
                     }
                     
                     analyses.append(analysis)
