@@ -392,9 +392,10 @@ class MCPAdapter:
         return predicted_price
 
     def _generate_reason(self, symbol: str, features: Dict, action: str, score: float) -> str:
-        """Generate comprehensive reasoning using PredictionAnalyzer"""
+        """Generate comprehensive reasoning using LLM-powered reason generator"""
         try:
             from core.prediction_analyzer import PredictionAnalyzer
+            from core.llm_reason_generator import LLMReasonGenerator
             
             analyzer = PredictionAnalyzer()
             
@@ -409,7 +410,26 @@ class MCPAdapter:
             # Generate comprehensive analysis
             analysis = analyzer.analyze_prediction(symbol, features, action, score, sentiment_data)
             
-            return analysis['detailed_reasoning']
+            # Get current price for LLM context
+            current_price = features.get('close', 0.0)
+            
+            # Try LLM-powered reason generation
+            try:
+                llm_generator = LLMReasonGenerator()
+                llm_reason = llm_generator.generate_stock_reason(
+                    symbol, analysis, action, score, current_price
+                )
+                
+                if llm_reason and len(llm_reason.strip()) > 50:  # Ensure we got a substantial response
+                    return llm_reason
+                else:
+                    # Fallback to original detailed reasoning
+                    return analysis['detailed_reasoning']
+                    
+            except Exception as llm_error:
+                logger.warning(f"LLM reason generation failed: {llm_error}")
+                # Fallback to original detailed reasoning
+                return analysis['detailed_reasoning']
             
         except Exception as e:
             logger.error(f"Error generating comprehensive reasoning: {e}")
